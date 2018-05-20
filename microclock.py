@@ -15,11 +15,11 @@ class Clock:
                 self.stamp += fix
 
     def image_str(self):
+        bright = {'0': '0', '1': '9'}
         binary_str = f'{self.stamp:016b}'
+        pix = [bright[pixel] for pixel in binary_str]
         return '{}{}{}{}{}:{}{}{}{}{}:20202:0{}{}{}0:0{}{}{}0'.format(
-                binary_str[0], binary_str[2], binary_str[4],
-                    binary_str[6], binary_str[8],
-                binary_str[1], binary_str[3], binary_str[5],
-                    binary_str[7], binary_str[9],
-                binary_str[10], binary_str[12], binary_str[14],
-                binary_str[11], binary_str[13], binary_str[15])
+                pix[0], pix[2], pix[4], pix[6], pix[8],
+                pix[1], pix[3], pix[5], pix[7], pix[9],
+                pix[10], pix[12], pix[14],
+                pix[11], pix[13], pix[15])
