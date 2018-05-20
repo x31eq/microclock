@@ -15,7 +15,7 @@ def tick_test(start=None, wait=1000, bright=8):
     while True:
         clock.tick()
         print(f'{clock.stamp:04x}')
-        print(clock.image_str().replace(':', '\n'))
+        print(clock.image_s().replace(':', '\n'))
         time.sleep(wait / 1000)
         print()
 
@@ -25,7 +25,7 @@ def unix_to_micro(unix_stamp=None):
         unix_stamp = time.time()
     time_struct = time.localtime(unix_stamp)
     return hms_to_micro(
-            time_struct.tm_hour,
+            (time_struct.tm_hour % 12),
             time_struct.tm_min,
             time_struct.tm_sec)
 
