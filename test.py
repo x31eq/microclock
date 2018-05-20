@@ -64,4 +64,4 @@ if __name__ == '__main__':
         assert clock.stamp & 0x3f == 0, clock.stamp
     assert clock.stamp == 0, clock.stamp
 
-    tick_test()
+    tick_test(bright=7)
