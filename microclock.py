@@ -18,8 +18,8 @@ class Clock:
         bright = {'0': '0', '1': '9'}
         binary_str = f'{self.stamp:016b}'
         pix = [bright[pixel] for pixel in binary_str]
-        return '{}{}{}{}{}:{}{}{}{}{}:20202:0{}{}{}0:0{}{}{}0'.format(
-                pix[0], pix[2], pix[4], pix[6], pix[8],
-                pix[1], pix[3], pix[5], pix[7], pix[9],
-                pix[10], pix[12], pix[14],
-                pix[11], pix[13], pix[15])
+        return '{}:{}:20202:0{}0:0{}0'.format(
+                pix[0] + pix[2] + pix[4] + pix[6] + pix[8],
+                pix[1] + pix[3] + pix[5] + pix[7] + pix[9],
+                pix[10] + pix[12] + pix[14],
+                pix[11] + pix[13] + pix[15])
