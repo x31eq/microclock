@@ -8,10 +8,10 @@ import microclock
 import time
 
 
-def tick_grid(start=None, wait=1000, brightness=8):
+def tick_grid(start=None, wait=1000, bright=8):
     if start is None:
         start = unix_to_micro()
-    clock = microclock.Clock(start, brightness)
+    clock = microclock.Clock(start, bright)
     while True:
         clock.tick()
         print(clock.image_str().replace(':', '\n'))
