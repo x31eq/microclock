@@ -14,16 +14,12 @@ class Clock:
                 self.stamp += fix
 
     def image_b(self):
-        bright = {'0': b'\0', '1': bytes([self.bright])}
-        helper = bytes([max(0, self.bright - 4)])
-        binary_str = f'{self.stamp:016b}'
-        px = [bright[pixel] for pixel in binary_str]
-        return b'%s%s%s\0%s\0%s\0%s\0\0%s\0' % (
-                px[0] + px[2] + px[4] + px[6] + px[8],
-                px[1] + px[3] + px[5] + px[7] + px[9],
-                helper, helper, helper,
-                px[10] + px[12] + px[14],
-                px[11] + px[13] + px[15])
+        bright = {'0': 0, '1': self.bright}
+        guide = bytes([max(0, self.bright - 4)])
+        px = bytes(bright[pixel] for pixel in f'{self.stamp:016b}')
+        return px[:9:2] + px[1:10:2] + b'%s\0%s\0%s\0%s\0\0%s\0' % (
+                guide, guide, guide,
+                px[10::2], px[11::2])
 
     def image_s(self):
         return IMG_FMT % tuple(self.image_b())
