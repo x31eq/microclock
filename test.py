@@ -8,25 +8,16 @@ import microclock
 import time
 
 
-def tick_grid(start=None, wait=1000, bright=8):
+def tick_test(start=None, wait=1000, bright=8):
     if start is None:
         start = unix_to_micro()
     clock = microclock.Clock(start, bright)
     while True:
         clock.tick()
+        print(f'{clock.stamp:04x}')
         print(clock.image_str().replace(':', '\n'))
         time.sleep(wait / 1000)
         print()
-
-
-def tick_hex(start=None, wait=1000):
-    if start is None:
-        start = unix_to_micro()
-    clock = microclock.Clock(start)
-    while True:
-        clock.tick()
-        print(f'{clock.stamp:04x}')
-        time.sleep(wait / 1000)
 
 
 def unix_to_micro(unix_stamp=None):
@@ -73,4 +64,4 @@ if __name__ == '__main__':
         assert clock.stamp & 0x3f == 0, clock.stamp
     assert clock.stamp == 0, clock.stamp
 
-    tick_grid()
+    tick_test()
