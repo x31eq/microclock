@@ -7,6 +7,8 @@ Desktop tests for MicroPython code
 import microclock
 import time
 
+IMAGE_FORMAT = '\n'.join(['%s' * 5]*5)
+
 
 def tick_test(start=None, wait=1000, bright=8):
     if start is None:
@@ -15,7 +17,7 @@ def tick_test(start=None, wait=1000, bright=8):
     while True:
         clock.tick()
         print(f'{clock.stamp:04x}')
-        print(clock.image_s().replace(':', '\n'))
+        print(IMAGE_FORMAT % tuple(clock.image_b()))
         time.sleep(wait / 1000)
         print()
 

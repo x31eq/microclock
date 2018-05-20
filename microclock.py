@@ -1,4 +1,3 @@
-IMG_FMT = ':'.join(['%s' * 5]*5)
 
 class Clock:
     skips = ((0xf, 0x1), (0x3c0, 0x40), (0xc000, -0xc000))
@@ -20,6 +19,3 @@ class Clock:
         return px[:9:2] + px[1:10:2] + b'%s\0%s\0%s\0%s\0\0%s\0' % (
                 guide, guide, guide,
                 px[10::2], px[11::2])
-
-    def image_s(self):
-        return IMG_FMT % tuple(self.image_b())
