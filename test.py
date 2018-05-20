@@ -8,13 +8,24 @@ import microclock
 import time
 
 
+def tick_grid(start=None, wait=1000):
+    if start is None:
+        start = unix_to_micro()
+    clock = microclock.Clock(start)
+    while True:
+        clock.tick()
+        print(clock.image_str().replace(':', '\n'))
+        time.sleep(wait / 1000)
+        print()
+
+
 def tick_hex(start=None, wait=1000):
     if start is None:
         start = unix_to_micro()
     clock = microclock.Clock(start)
     while True:
         clock.tick()
-        print('%04x' % clock.stamp)
+        print(f'{clock.stamp:04x}')
         time.sleep(wait / 1000)
 
 
