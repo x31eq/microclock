@@ -18,9 +18,8 @@ class Clock:
         px = [bright[pixel == '1'] for pixel in binary]
         return bytes(
                 px[0:9:2] + px[1:10:2] +
-                [guide, 0, guide, 0, guide] +
-                [0] + px[10::2] + [0] +
-                [0] + px[11::2] + [0])
+                [guide, 0] * 3 +
+                px[10::2] + [0, 0] + px[11::2] + [0])
 
 
 def run(start=0):
