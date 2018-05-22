@@ -16,5 +16,10 @@ class Clock:
         guide = bytes([max(0, self.bright - 4)])
         binary = '{:016b}'.format(self.stamp)
         px = bytes(bright[pixel] for pixel in binary)
-        return px[:9:2] + px[1:10:2] + b'%s\0%s\0%s\0%s\0\0%s\0' % (
-                guide, guide, guide, px[10::2], px[11::2])
+        return b'%s%s%s\0%s\0%s\0%s\0\0%s\0' % (
+                px[0] + px[2] + px[4] + px[6] + px[8],
+                px[1] + px[3] + px[5] + px[7] + px[9],
+                guide, guide, guide,
+                px[10] + px[12] + px[14],
+                px[11] + px[13] + px[15])
+
