@@ -33,3 +33,6 @@ def run(start=0):
         now += 1000
         sleep(now - running_time())
         clock.tick()
+
+if __name__ == '__main__':
+    run()
