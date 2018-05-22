@@ -23,3 +23,13 @@ class Clock:
                 px[10:11], px[12:13], px[14:15],
                 px[11:12], px[13:14], px[15:16])
 
+
+def run(start=0):
+    from microbit import display, Image, running_time, sleep
+    now = running_time()
+    clock = Clock(start, 6)
+    while True:
+        display.show(Image(5, 5, clock.image_b()))
+        now += 1000
+        sleep(now - running_time())
+        clock.tick()
