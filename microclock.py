@@ -12,16 +12,15 @@ class Clock:
                 self.stamp += fix
 
     def image_b(self):
-        bright = bytes((0, self.bright))
+        bright = 0, self.bright
         guide = max(1, self.bright - 3)
         binary = '{:016b}'.format(self.stamp)
-        px = bytes(bright[pixel == '1'] for pixel in binary)
-        return bytes((
-                px[0], px[2], px[4], px[6], px[8],
-                px[1], px[3], px[5], px[7], px[9],
-                guide, 0, guide, 0, guide,
-                0, px[10], px[12], px[14], 0,
-                0, px[11], px[13], px[15], 0))
+        px = [bright[pixel == '1'] for pixel in binary]
+        return bytes(
+                px[0:9:2] + px[1:10:2] +
+                [guide, 0, guide, 0, guide] +
+                [0] + px[10::2] + [0] +
+                [0] + px[11::2] + [0])
 
 
 def run(start=0):
