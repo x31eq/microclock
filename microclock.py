@@ -8,7 +8,7 @@ class Clock:
     def tick(self):
         self.stamp += 1
         for mask, fix in self.skips:
-            if (self.stamp & mask) == mask:
+            if self.stamp & mask == mask:
                 self.stamp += fix
 
     def image_b(self):
@@ -28,7 +28,10 @@ def run(start=0):
     clock = Clock(start, 5)
     while True:
         display.show(Image(5, 5, clock.image_b()))
-        now += 1000
+        # Empirically measured 13.6% slow
+        now += 986
+        if clock.stamp % 0xf == 0:
+            now += 6
         sleep(now - running_time())
         clock.tick()
 
