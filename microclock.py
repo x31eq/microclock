@@ -14,6 +14,7 @@ class Clock:
     def image_b(self):
         bright = {'0': 0, '1': self.bright}
         guide = bytes([max(0, self.bright - 4)])
-        px = bytes(bright[pixel] for pixel in f'{self.stamp:016b}')
+        binary = '{:016b}'.format(self.stamp)
+        px = bytes(bright[pixel] for pixel in binary)
         return px[:9:2] + px[1:10:2] + b'%s\0%s\0%s\0%s\0\0%s\0' % (
                 guide, guide, guide, px[10::2], px[11::2])
