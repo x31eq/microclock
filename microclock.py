@@ -28,10 +28,7 @@ def run(start=0):
     clock = Clock(start, 5)
     while True:
         display.show(Image(5, 5, clock.image_b()))
-        # Empirically measured 13.6% slow
-        now += 986
-        if clock.stamp % 0xf == 0:
-            now += 6
+        now += 988
         sleep(now - running_time())
         clock.tick()
 
