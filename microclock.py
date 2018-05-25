@@ -13,7 +13,7 @@ class Clock:
 
     def image_b(self):
         bright = 0, self.bright
-        guide = max(1, self.bright - 3)
+        guide = max(1, self.bright - 2) if self.bright else 0
         binary = '{:016b}'.format(self.stamp)
         px = [bright[pixel == '1'] for pixel in binary]
         return bytes(
@@ -23,10 +23,13 @@ class Clock:
 
 
 def run(start=0):
-    from microbit import display, Image, running_time, sleep
+    from microbit import (display, Image, running_time, sleep,
+            button_a, button_b)
     now = running_time()
-    clock = Clock(start, 5)
+    clock = Clock(start, 3)
     while True:
+        if button_b.was_pressed():
+            clock.bright = (1 + clock.bright) % 9
         display.show(Image(5, 5, clock.image_b()))
         now += 988
         sleep(now - running_time())
