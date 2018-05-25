@@ -14,11 +14,11 @@ class Clock:
             if self.stamp & mask == mask:
                 self.stamp += fix
 
-    def image_b(self):
+    def image_b(self, secs=True):
         bright = 0, self.bright
         guide = max(1, self.bright - 2) if self.bright else 0
-        binary = '{:016b}'.format(self.stamp)
-        px = [bright[pixel == '1'] for pixel in binary]
+        t = self.stamp if secs else (self.stamp & 0xffc0)
+        px = [bright[pixel == '1'] for pixel in '{:016b}'.format(t)]
         return bytes(
                 px[0:9:2] + px[1:10:2] +
                 [guide, 0] * 3 +
@@ -28,10 +28,13 @@ class Clock:
 def run(start=0):
     now = running_time()
     clock = Clock(start, 3)
+    secs = True
     while True:
         if button_b.was_pressed():
             clock.bright = (1 + clock.bright) % 9
-        display.show(Image(5, 5, clock.image_b()))
+        if button_a.was_pressed():
+            secs = not secs
+        display.show(Image(5, 5, clock.image_b(secs)))
         now += 988
         sleep(now - running_time())
         clock.tick()
