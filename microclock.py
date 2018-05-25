@@ -1,3 +1,6 @@
+from microbit import (display, Image, running_time, sleep,
+            button_a, button_b)
+
 class Clock:
     skips = ((0xf, 0x1), (0x3c0, 0x40), (0xc000, -0xc000))
 
@@ -23,8 +26,6 @@ class Clock:
 
 
 def run(start=0):
-    from microbit import (display, Image, running_time, sleep,
-            button_a, button_b)
     now = running_time()
     clock = Clock(start, 3)
     while True:
