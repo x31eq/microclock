@@ -5,6 +5,7 @@ from microbit import (display, Image, sleep,
 def run(start=0):
     clock = Clock(start)
     screen = Screen(3)
+    mode = 0
     secs = True
     while True:
         if button_b.was_pressed():
@@ -18,23 +19,25 @@ def run(start=0):
             else:
                 screen.bright += 1
         if button_a.was_pressed():
-            secs = not secs
+            mode = (mode + 1) % 3
         m, s = clock.minsec()
-        screen.show(m, s if secs else 0)
+        screen.show(m,
+                s if mode == 0 else 0 if mode == 1 else temperature(),
+                7 if mode == 2 else 0x15)
         clock.tick(True)
 
 
 class Screen:
-    def __init__(self, bright=5, guides=0x15):
+    def __init__(self, bright=5):
         self.bright = bright
         display.on()
 
-    def show(self, top, bot):
-        bright = 0, self.bright
-        guide = 0, max(1, self.bright - 2) if self.bright else 0
-        gx = [guide[pixel == '1'] for pixel in '{:5b}'.format(guides)]
-        tx, bx = [[bright[pixel == '1'] for pixel in '{:010b}'.format(px)]
-                for px in (top, bot)]
+    def show(self, top, bot, guides=0x15):
+        bright = str(self.bright)
+        guide = str(max(1, self.bright - 2))
+        gx = list(map(int, '{:05b}'.format(guides).replace('1', guide)))
+        tx, bx = (list(map(int, '{:010b}'.format(px).replace('1', bright)))
+                for px in (top, bot))
         display.show(Image(5, 5, bytes(
                 tx[0::2] + tx[1::2] + gx + bx[0::2] + bx[1::2])))
 
