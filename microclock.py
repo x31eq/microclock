@@ -32,6 +32,7 @@ class Clock:
 def run(start=0):
     clock = Clock(start, 3)
     secs = True
+    display.on()
     while True:
         if button_b.was_pressed():
             if clock.bright == 9:
