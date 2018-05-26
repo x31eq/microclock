@@ -1,6 +1,6 @@
+import radio
 from microbit import (display, Image, sleep,
         running_time, button_a, button_b, temperature)
-
 
 def run(start=0):
     clock = Clock(start)
@@ -47,8 +47,19 @@ class Clock:
     def __init__(self, stamp=0, bright=9):
         self.stamp = stamp
         self.now = running_time()
+        radio.config(channel=18, address=0x867fa897, length=5, queue=1)
+        radio.on()
+        self.time_set = False
 
     def tick(self, rt=False):
+        try:
+            message = radio.receive()
+            if not self.time_set and message and message[0] == 1:
+                self.stamp = int.from_bytes(message[1:], 4, 'big')
+                radio.off()
+                self.time_set = True
+        except Exception:
+            pass
         if rt:
             self.now += 988
             sleep(self.now - running_time())
