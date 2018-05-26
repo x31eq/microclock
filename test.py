@@ -4,7 +4,7 @@
 Desktop tests for MicroPython code
 """
 
-import microclock
+import clock as microclock
 import time
 
 IMAGE_FORMAT = '\n'.join(['%s' * 5]*5)
