@@ -1,26 +1,41 @@
-from microbit import (display, Image, running_time, sleep,
-            button_a, button_b)
+from microbit import display, Image, running_time, sleep, button_a, button_b
 
 
 def run(start=0):
-    clock = Clock(start, 3)
+    clock = Clock(start)
+    screen = Screen(3)
     secs = True
-    display.on()
     while True:
         if button_b.was_pressed():
-            if clock.bright == 9:
+            if screen.bright == 9:
                 display.clear()
                 display.off()
                 while not button_b.was_pressed():
                     clock.tick(True)
                 display.on()
-                clock.bright = 1
+                screen.bright = 1
             else:
-                clock.bright += 1
+                screen.bright += 1
         if button_a.was_pressed():
             secs = not secs
-        display.show(Image(5, 5, clock.image_b(secs)))
+        m, s = clock.minsec()
+        screen.show(m, s if secs else 0)
         clock.tick(True)
+
+
+class Screen:
+    def __init__(self, bright=5):
+        self.bright = bright
+        display.on()
+
+    def show(self, top, bot):
+        bright = 0, self.bright
+        guide = 0, max(1, self.bright - 2) if self.bright else 0
+        gx = [guide[pixel == '1'] for pixel in '10101']
+        tx, bx = [[bright[pixel == '1'] for pixel in '{:010b}'.format(px)]
+                for px in (top, bot)]
+        display.show(Image(5, 5, bytes(
+                tx[0::2] + tx[1::2] + gx + bx[0::2] + bx[1::2])))
 
 
 class Clock:
@@ -28,7 +43,6 @@ class Clock:
 
     def __init__(self, stamp=0, bright=9):
         self.stamp = stamp
-        self.bright = bright
         self.now = running_time()
 
     def tick(self, rt=False):
@@ -40,15 +54,8 @@ class Clock:
             if self.stamp & mask == mask:
                 self.stamp += fix
 
-    def image_b(self, secs=True):
-        bright = 0, self.bright
-        guide = max(1, self.bright - 2) if self.bright else 0
-        t = self.stamp if secs else (self.stamp & 0xffc0)
-        px = [bright[pixel == '1'] for pixel in '{:016b}'.format(t)]
-        return bytes(
-                px[0:9:2] + px[1:10:2] +
-                [guide, 0] * 3 +
-                px[10::2] + [0, 0] + px[11::2] + [0])
+    def minsec(self):
+        return self.stamp >> 6, (self.stamp & 0x3f) << 2
 
 
 if __name__ == '__main__':
