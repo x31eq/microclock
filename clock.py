@@ -70,7 +70,7 @@ class Clock:
 
     def send_time(self):
         radio.on()
-        radio.send_bytes(b'\1' + int(self.stamp).to_bytes(2, 'big'))
+        radio.send_bytes(b'\1' + self.stamp.to_bytes(2, 'big'))
         if not self.time_needed:
             radio.off()
 
