@@ -1,4 +1,5 @@
-from microbit import display, Image, running_time, sleep, button_a, button_b
+from microbit import (display, Image, sleep,
+        running_time, button_a, button_b, temperature)
 
 
 def run(start=0):
@@ -24,14 +25,14 @@ def run(start=0):
 
 
 class Screen:
-    def __init__(self, bright=5):
+    def __init__(self, bright=5, guides=0x15):
         self.bright = bright
         display.on()
 
     def show(self, top, bot):
         bright = 0, self.bright
         guide = 0, max(1, self.bright - 2) if self.bright else 0
-        gx = [guide[pixel == '1'] for pixel in '10101']
+        gx = [guide[pixel == '1'] for pixel in '{:5b}'.format(guides)]
         tx, bx = [[bright[pixel == '1'] for pixel in '{:010b}'.format(px)]
                 for px in (top, bot)]
         display.show(Image(5, 5, bytes(
