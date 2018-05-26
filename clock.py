@@ -10,16 +10,15 @@ def run(start=0):
     while True:
         if button_b.was_pressed():
             if screen.bright == 9:
-                display.clear()
-                display.off()
-                while not button_b.was_pressed():
-                    clock.tick(True)
-                display.on()
+                clock.hide(button_b)
                 screen.bright = 1
             else:
                 screen.bright += 1
         if button_a.was_pressed():
-            mode = (mode + 1) % 3
+            mode += 1
+            if mode == 3:
+                clock.hide(button_a)
+                mode = 0
         m, s = clock.minsec()
         screen.show(m,
                 s if mode == 0 else 0 if mode == 1 else temperature(),
@@ -60,6 +59,13 @@ class Clock:
 
     def minsec(self):
         return self.stamp >> 6, (self.stamp & 0x3f) << 2
+
+    def hide(self, unhider):
+        display.clear()
+        display.off()
+        while not unhider.was_pressed():
+            self.tick(True)
+        display.on()
 
 
 if __name__ == '__main__':
