@@ -1,6 +1,28 @@
 from microbit import (display, Image, running_time, sleep,
             button_a, button_b)
 
+
+def run(start=0):
+    clock = Clock(start, 3)
+    secs = True
+    display.on()
+    while True:
+        if button_b.was_pressed():
+            if clock.bright == 9:
+                display.clear()
+                display.off()
+                while not button_b.was_pressed():
+                    clock.tick(True)
+                display.on()
+                clock.bright = 1
+            else:
+                clock.bright += 1
+        if button_a.was_pressed():
+            secs = not secs
+        display.show(Image(5, 5, clock.image_b(secs)))
+        clock.tick(True)
+
+
 class Clock:
     skips = ((0xf, 0x1), (0x3c0, 0x40), (0xc000, -0xc000))
 
@@ -27,27 +49,6 @@ class Clock:
                 px[0:9:2] + px[1:10:2] +
                 [guide, 0] * 3 +
                 px[10::2] + [0, 0] + px[11::2] + [0])
-
-
-def run(start=0):
-    clock = Clock(start, 3)
-    secs = True
-    display.on()
-    while True:
-        if button_b.was_pressed():
-            if clock.bright == 9:
-                display.clear()
-                display.off()
-                while not button_b.was_pressed():
-                    clock.tick(True)
-                display.on()
-                clock.bright = 1
-            else:
-                clock.bright += 1
-        if button_a.was_pressed():
-            secs = not secs
-        display.show(Image(5, 5, clock.image_b(secs)))
-        clock.tick(True)
 
 
 if __name__ == '__main__':
