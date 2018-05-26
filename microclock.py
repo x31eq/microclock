@@ -31,7 +31,18 @@ def run(start=0):
     secs = True
     while True:
         if button_b.was_pressed():
-            clock.bright = (1 + clock.bright) % 9
+            if clock.bright == 9:
+                display.clear()
+                display.off()
+                while not button_b.was_pressed():
+                    now += 988
+                    sleep(now - running_time())
+                    clock.tick()
+                display.on()
+                clock.bright = 1
+            else:
+                clock.bright += 1
+            clock.bright += 1
         if button_a.was_pressed():
             secs = not secs
         display.show(Image(5, 5, clock.image_b(secs)))
