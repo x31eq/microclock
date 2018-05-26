@@ -53,7 +53,7 @@ class Clock:
 
     def tick(self, rt=False):
         try:
-            message = radio.receive()
+            message = radio.receive_bytes()
             if not self.time_set and message and message[0] == 1:
                 self.stamp = int.from_bytes(message[1:], 4, 'big')
                 radio.off()
