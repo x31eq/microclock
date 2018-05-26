@@ -7,8 +7,12 @@ class Clock:
     def __init__(self, stamp=0, bright=9):
         self.stamp = stamp
         self.bright = bright
+        self.now = running_time()
 
-    def tick(self):
+    def tick(self, rt=False):
+        if rt:
+            self.now += 988
+            sleep(self.now - running_time())
         self.stamp += 1
         for mask, fix in self.skips:
             if self.stamp & mask == mask:
@@ -25,34 +29,25 @@ class Clock:
                 px[10::2] + [0, 0] + px[11::2] + [0])
 
 
-class App:
-    def __init__(self, start=0):
-        self.clock = Clock(start, 3)
-        self.secs = True
-        self.now = running_time()
-
-    def tick(self):
-        self.now += 988
-        sleep(self.now - running_time())
-        self.clock.tick()
-
-    def run(self):
-        while True:
-            if button_b.was_pressed():
-                if self.clock.bright == 9:
-                    display.clear()
-                    display.off()
-                    while not button_b.was_pressed():
-                        self.tick()
-                    display.on()
-                    self.clock.bright = 1
-                else:
-                    self.clock.bright += 1
-            if button_a.was_pressed():
-                self.secs = not self.secs
-            display.show(Image(5, 5, self.clock.image_b(self.secs)))
-            self.tick()
+def run(start=0):
+    clock = Clock(start, 3)
+    secs = True
+    while True:
+        if button_b.was_pressed():
+            if clock.bright == 9:
+                display.clear()
+                display.off()
+                while not button_b.was_pressed():
+                    clock.tick(True)
+                display.on()
+                clock.bright = 1
+            else:
+                clock.bright += 1
+        if button_a.was_pressed():
+            secs = not secs
+        display.show(Image(5, 5, clock.image_b(secs)))
+        clock.tick(True)
 
 
 if __name__ == '__main__':
-    App().run()
+    run(0)
