@@ -49,15 +49,15 @@ class Clock:
         self.now = running_time()
         radio.config(channel=18, address=0x867fa897, length=3, queue=1)
         radio.on()
-        self.time_set = False
+        self.time_needed = True
 
     def tick(self, rt=False):
         try:
             message = radio.receive_bytes()
-            if not self.time_set and message and message[0] == 1:
+            if self.time_needed and message and message[0] == 1:
                 self.stamp = int.from_bytes(message[1:], 2, 'big')
                 radio.off()
-                self.time_set = True
+                self.time_needed = False
         except Exception:
             pass
         if rt:
@@ -67,6 +67,12 @@ class Clock:
         for mask, fix in self.skips:
             if self.stamp & mask == mask:
                 self.stamp += fix
+
+    def send_time(self):
+        radio.on()
+        radio.send_bytes(b'\1' + int(self.stamp).to_bytes(2, 'big'))
+        if not self.time_needed:
+            radio.off()
 
     def minsec(self):
         return self.stamp >> 6, (self.stamp & 0x3f) << 2
