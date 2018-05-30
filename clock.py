@@ -2,7 +2,7 @@ import radio
 from microbit import (display, Image, sleep,
         running_time, button_a, button_b, temperature)
 
-def run(start=0):
+def run(start=0, server=False):
     clock = Clock(start)
     screen = Screen(3)
     mode = 0
@@ -24,6 +24,8 @@ def run(start=0):
                 s if mode == 0 else 0 if mode == 1 else temperature(),
                 7 if mode == 2 else 0x15)
         clock.tick(True)
+        if server:
+            clock.send_time()
 
 
 class Screen:
@@ -54,7 +56,7 @@ class Clock:
     def tick(self, rt=False):
         try:
             message = radio.receive_bytes()
-            if self.time_needed and message and message[0] == 1:
+            if self.time_needed and message and message[0:1] == b't':
                 self.stamp = int.from_bytes(message[1:], 2, 'big')
                 radio.off()
                 self.time_needed = False
@@ -70,7 +72,7 @@ class Clock:
 
     def send_time(self):
         radio.on()
-        radio.send_bytes(b'\1' + self.stamp.to_bytes(2, 'big'))
+        radio.send_bytes(b't' + self.stamp.to_bytes(2, 'big'))
         if not self.time_needed:
             radio.off()
 
